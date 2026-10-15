@@ -2,24 +2,22 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Kategori;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $categories = [
+            ['nama_kategori' => 'Komputer & Laptop', 'deskripsi' => 'Perangkat PC desktop, laptop praktik, dan unit server.'],
+            ['nama_kategori' => 'Perangkat Jaringan', 'deskripsi' => 'Router, switch, access point, dan perangkat jaringan lainnya.'],
+            ['nama_kategori' => 'Alat Perkabelan', 'deskripsi' => 'Tang crimping, LAN tester, kabel UTP, dan konektor RJ45.'],
+            ['nama_kategori' => 'Multimedia', 'deskripsi' => 'Proyektor, layar proyektor, kamera, dan perlengkapan audio.']
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($categories as $cat) {
+            Kategori::create($cat);
+        }
     }
 }
