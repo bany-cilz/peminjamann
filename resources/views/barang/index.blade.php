@@ -3,104 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Inventaris | SIMLAB-RPL</title>
+    <title>SIMLAB-RPL — Data Barang</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .font-comic { font-family: 'Fredoka', cursive; }
+    </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-[#fef08a] text-black min-h-screen flex flex-col antialiased p-4 md:p-8">
 
-    <div class="container mx-auto p-4 md:p-8">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Data Inventaris Lab RPL</h1>
-            <a href="{{ route('barang.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700">+ Tambah Barang</a>
-        </div>
+    <div class="max-w-5xl mx-auto w-full flex-1 flex flex-col gap-6">
         
         <!-- Navbar -->
-        <div class="mb-6">
-            <a href="{{ route('dashboard') }}" class="text-blue-600 font-semibold mr-4">Dashboard</a>
-            <a href="{{ route('barang.index') }}" class="text-blue-600 font-semibold">Data Barang</a>
-        </div>
-
-        <!-- Flash Alert (Snackbar Style) -->
-        @if(session('success'))
-            <div id="snackbar" class="fixed bottom-4 right-4 z-50 bg-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-opacity duration-300 transform translate-y-0 opacity-100">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span class="font-medium">{{ session('success') }}</span>
-                <button onclick="document.getElementById('snackbar').remove()" class="ml-auto text-emerald-200 hover:text-white focus:outline-none">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
+        <header class="bg-white border-3 border-black p-4 rounded-lg shadow-[4px_4px_0px_0px_#000] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-yellow-400 border-3 border-black px-3 py-1 rounded-md font-comic text-lg font-bold shadow-[2px_2px_0px_0px_#000]">
+                    ⚡ SIMLAB!
+                </div>
+                <div>
+                    <h1 class="font-comic text-xl font-bold tracking-wide uppercase">SIMLAB-RPL</h1>
+                    <p class="text-xs font-bold text-slate-700">Sistem Inventaris Lab RPL</p>
+                </div>
             </div>
 
-            <!-- Script untuk menghilangkan snackbar otomatis setelah 3 detik -->
+            <nav class="flex gap-2">
+                <a href="{{ route('dashboard') }}" class="font-comic px-4 py-2 bg-white text-black border-3 border-black font-bold text-xs rounded-md shadow-[2px_2px_0px_0px_#000] hover:bg-yellow-200 transition-colors">
+                    📊 Dashboard
+                </a>
+                <a href="{{ route('barang.index') }}" class="font-comic px-4 py-2 bg-yellow-400 text-black border-3 border-black font-bold text-xs rounded-md shadow-[2px_2px_0px_0px_#000]">
+                    📦 Data Barang
+                </a>
+            </nav>
+        </header>
+
+        <!-- Snackbar Toast -->
+        @if(session('success'))
+            <div id="snackbar" class="fixed bottom-6 right-6 z-50 bg-emerald-300 border-3 border-black text-black font-comic font-bold text-xs px-4 py-3 rounded-md shadow-[4px_4px_0px_0px_#000] flex items-center gap-3">
+                <span>🎉 {{ session('success') }}</span>
+                <button onclick="document.getElementById('snackbar').remove()" class="bg-black text-white rounded-md px-2 py-0.5 text-xs font-bold">&times;</button>
+            </div>
             <script>
-                setTimeout(function() {
-                    const snackbar = document.getElementById('snackbar');
-                    if (snackbar) {
-                        // Menambahkan class untuk efek menghilang (fade out/slide down)
-                        snackbar.classList.remove('opacity-100', 'translate-y-0');
-                        snackbar.classList.add('opacity-0', 'translate-y-2');
-                        
-                        // Menghapus elemen dari DOM setelah animasi transisi selesai
-                        setTimeout(() => {
-                            snackbar.remove();
-                        }, 300); // 300ms sesuai dengan duration-300 di Tailwind
-                    }
-                }, 1500); 
+                setTimeout(() => {
+                    const el = document.getElementById('snackbar');
+                    if (el) el.remove();
+                }, 3000);
             </script>
         @endif
 
-        <!-- Tabel Responsif (Bisa Scroll Horizontal di HP) -->
-        <div class="overflow-x-auto bg-white shadow rounded-lg">
-            <table class="min-w-full text-left border-collapse">
-                <thead class="bg-gray-50 border-b">
-                    <tr>
-                        <th class="p-4 text-sm font-semibold text-gray-600 uppercase">Kode</th>
-                        <th class="p-4 text-sm font-semibold text-gray-600 uppercase">Nama & Kategori</th>
-                        <th class="p-4 text-sm font-semibold text-gray-600 uppercase">Stok</th>
-                        <th class="p-4 text-sm font-semibold text-gray-600 uppercase">Status</th>
-                        <th class="p-4 text-sm font-semibold text-gray-600 uppercase">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    @forelse($barangs as $item)
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-4">{{ $item->kode_barang }}</td>
-                        <td class="p-4">
-                            <span class="font-medium text-gray-900">{{ $item->nama_barang }}</span><br>
-                            <span class="text-xs text-gray-500">{{ $item->kategori->nama_kategori }}</span>
-                        </td>
-                        <td class="p-4">{{ $item->stok }}</td>
-                        <td class="p-4">
-                            <!-- Visual Status Badge Sesuai Panduan -->
-                            @if($item->status == 'Tersedia')
-                                <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-semibold">Tersedia</span>
-                            @elseif($item->status == 'Dipinjam')
-                                <span class="px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-xs font-semibold">Dipinjam</span>
-                            @else
-                                <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold">Maintenance</span>
-                            @endif
-                        </td>
-                        <td class="p-4 flex gap-3">
-                            <a href="{{ route('barang.edit', $item->id) }}" class="text-blue-600 hover:underline">Edit</a>
-                            
-                            <form action="{{ route('barang.destroy', $item->id) }}" method="POST">
-                                @csrf 
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline" onclick="return confirm('Yakin ingin menghapus {{ $item->nama_barang }}?')">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="p-6 text-center text-gray-500 italic">Data inventaris belum tersedia. Silakan tambah barang baru.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <!-- Judul & Action Button -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="bg-white border-3 border-black px-4 py-2 rounded-md shadow-[3px_3px_0px_0px_#000]">
+                <h2 class="font-comic text-xl font-bold uppercase">📋 DAFTAR INVENTARIS LAB</h2>
+            </div>
+            <a href="{{ route('barang.create') }}" class="font-comic bg-rose-400 hover:bg-rose-500 text-black text-xs font-bold px-4 py-2.5 rounded-md border-3 border-black shadow-[3px_3px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+                + TAMBAH BARANG BARU
+            </a>
         </div>
+
+        <!-- Tabel Komik Tegas -->
+        <div class="bg-white border-3 border-black rounded-lg shadow-[5px_5px_0px_0px_#000] overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-yellow-300 border-b-3 border-black font-comic text-black text-xs font-bold uppercase tracking-wider">
+                            <th class="py-3 px-4 border-r-2 border-black">Kode</th>
+                            <th class="py-3 px-4 border-r-2 border-black">Nama Barang</th>
+                            <th class="py-3 px-4 border-r-2 border-black">Kategori</th>
+                            <th class="py-3 px-4 border-r-2 border-black">Stok</th>
+                            <th class="py-3 px-4 border-r-2 border-black">Kondisi</th>
+                            <th class="py-3 px-4 border-r-2 border-black">Status</th>
+                            <th class="py-3 px-4 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y-2 divide-black font-bold text-xs">
+                        @forelse($barangs as $item)
+                        <tr class="hover:bg-yellow-100/60 transition-colors">
+                            <td class="py-3 px-4 border-r-2 border-black font-mono font-bold text-slate-900">
+                                <span class="bg-slate-100 border-2 border-black px-2 py-0.5 rounded-md shadow-[1px_1px_0px_0px_#000]">
+                                    {{ $item->kode_barang }}
+                                </span>
+                            </td>
+
+                            <td class="py-3 px-4 border-r-2 border-black font-bold text-slate-900 text-xs">
+                                {{ $item->nama_barang }}
+                            </td>
+
+                            <td class="py-3 px-4 border-r-2 border-black text-slate-700">
+                                {{ $item->kategori->nama_kategori }}
+                            </td>
+
+                            <td class="py-3 px-4 border-r-2 border-black font-bold">
+                                <span class="bg-cyan-200 border-2 border-black px-2 py-0.5 rounded-md">
+                                    {{ $item->stok }} Unit
+                                </span>
+                            </td>
+
+                            <td class="py-3 px-4 border-r-2 border-black">
+                                {{ $item->kondisi }}
+                            </td>
+
+                            <td class="py-3 px-4 border-r-2 border-black whitespace-nowrap">
+                                @if($item->status == 'Tersedia')
+                                    <span class="font-comic bg-emerald-300 border-2 border-black text-black px-2.5 py-0.5 rounded-md font-bold text-[11px] shadow-[1px_1px_0px_0px_#000]">
+                                        ✅ Tersedia
+                                    </span>
+                                @elseif($item->status == 'Dipinjam')
+                                    <span class="font-comic bg-rose-300 border-2 border-black text-black px-2.5 py-0.5 rounded-md font-bold text-[11px] shadow-[1px_1px_0px_0px_#000]">
+                                        📌 Dipinjam
+                                    </span>
+                                @else
+                                    <span class="font-comic bg-amber-300 border-2 border-black text-black px-2.5 py-0.5 rounded-md font-bold text-[11px] shadow-[1px_1px_0px_0px_#000]">
+                                        🛠 Maintenance
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="py-3 px-4 text-center whitespace-nowrap">
+                                <div class="flex items-center justify-center gap-2">
+                                    <a href="{{ route('barang.edit', $item->id) }}" class="font-comic bg-cyan-300 hover:bg-cyan-400 text-black border-2 border-black px-2.5 py-1 rounded-md font-bold text-xs shadow-[1px_1px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+                                        ✏️ Edit
+                                    </a>
+                                    <form action="{{ route('barang.destroy', $item->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('Hapus {{ $item->nama_barang }}?')" class="font-comic bg-rose-400 hover:bg-rose-500 text-black border-2 border-black px-2.5 py-1 rounded-md font-bold text-xs shadow-[1px_1px_0px_0px_#000] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all">
+                                            🗑 Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="py-8 text-center bg-white font-comic text-xs font-bold text-slate-500">
+                                💥 BELUM ADA DATA BARANG DI LAB!
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 
 </body>
